@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * The annotated CharSequence must match the specified regular expression.
  * Null elements are considered valid (use @NotNull or @NotEmpty to reject nulls).
- * Mirrors jakarta.validation.constraints.Pattern behavior.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

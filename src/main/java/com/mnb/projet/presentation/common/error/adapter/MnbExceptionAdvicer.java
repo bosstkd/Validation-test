@@ -1,7 +1,7 @@
 package com.mnb.projet.presentation.common.error.adapter;
 
-import com.mnb.projet.domain.common.exceptions.MnbBadRequestException;
-import com.mnb.projet.domain.common.exceptions.MnbNotFoundException;
+import com.mnb.projet.domain.common.exceptions.DomainBadRequestCommandException;
+import com.mnb.projet.domain.common.exceptions.DomainResourceNotFoundException;
 import com.mnb.projet.domain.validation.exception.ErrorMessage;
 import com.mnb.projet.domain.validation.exception.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -13,10 +13,10 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Date;
 
 @ControllerAdvice
-public class MnbExceptionMapper {
+public class MnbExceptionAdvicer {
 
-    @ExceptionHandler(MnbNotFoundException.class)
-    public ResponseEntity<ErrorMessage> MnbNotFoundException(MnbNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(DomainResourceNotFoundException.class)
+    public ResponseEntity<ErrorMessage> MnbNotFoundException(DomainResourceNotFoundException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
@@ -26,11 +26,11 @@ public class MnbExceptionMapper {
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({MnbBadRequestException.class, ValidationException.class})
+    @ExceptionHandler({DomainBadRequestCommandException.class, ValidationException.class})
     public ResponseEntity<ErrorMessage> badRequestExceptionHandler(RuntimeException ex, WebRequest request) {
 
-        if (ex instanceof MnbBadRequestException) {
-            MnbBadRequestException exception = (MnbBadRequestException) ex;
+        if (ex instanceof DomainBadRequestCommandException) {
+            DomainBadRequestCommandException exception = (DomainBadRequestCommandException) ex;
             ErrorMessage message = new ErrorMessage(
                     HttpStatus.BAD_REQUEST.value(),
                     new Date(),

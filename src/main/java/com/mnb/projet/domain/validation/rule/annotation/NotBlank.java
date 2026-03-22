@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * The annotated field must not be null and must contain at least one non-whitespace character.
- * Mirrors jakarta.validation.constraints.NotBlank behavior.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

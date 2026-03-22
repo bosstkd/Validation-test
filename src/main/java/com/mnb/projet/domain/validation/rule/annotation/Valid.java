@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * Marks a field for cascaded validation: the ReflectionValidator will recursively
  * validate the nested object using its own annotations.
- * Mirrors jakarta.validation.Valid behavior.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

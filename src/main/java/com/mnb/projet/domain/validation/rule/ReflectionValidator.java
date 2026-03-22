@@ -11,12 +11,13 @@ import java.util.*;
 
 /**
  * Reflection-based validator that processes our custom constraint annotations
- * (@NotNull, @NotEmpty, @NotBlank, @Pattern, @Valid, @AssertTrue) without
+ * (@NotNull, @NotEmpty, @NotBlank, @Pattern, @Valid, @AssertTrue) we apply JSR-380 without
  * any dependency on jakarta.validation.
  *
- * <p>Usage: {@code ReflectionValidator.validate(myModel);}
+ * <p>Usage: {@code ReflectionValidator.validate(myObject);}
+ * myObject should contains our annotations to be scanned else it will be ignored
  *
- * <p>Behavior mirrors jakarta.validation:
+ * <p>The behavior is similar to jakarta.validation:
  * <ul>
  *   <li>@NotNull  — fails if value is null; null does NOT propagate to @Pattern</li>
  *   <li>@NotEmpty — fails if null or empty (String/Collection/Map/array)</li>
@@ -25,7 +26,6 @@ import java.util.*;
  *   <li>@Valid    — cascades into the nested object recursively</li>
  *   <li>@AssertTrue — method must return true; skipped if method throws</li>
  * </ul>
- * All violations are collected before throwing, not short-circuited.
  */
 public class ReflectionValidator {
 
@@ -39,10 +39,7 @@ public class ReflectionValidator {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Core recursive engine
-    // -------------------------------------------------------------------------
-
+    // Error collector engine
     private static void collectErrors(Object target, Set<ValidationError> errors) {
         if (target == null) return;
 
@@ -50,19 +47,16 @@ public class ReflectionValidator {
         validateAssertTrueMethods(target, errors);
     }
 
-    // -------------------------------------------------------------------------
-    // Field-level processing
-    // -------------------------------------------------------------------------
-
+    // Field-level checkers
     private static void validateFields(Object target, Set<ValidationError> errors) {
         for (Field field : getAllFields(target.getClass())) {
             field.setAccessible(true);
             Object value = getFieldValue(field, target);
             String champ = buildChamp(target.getClass(), field.getName());
 
-            boolean failedRequiredCheck = applyNotNull(field, value, champ, errors)
-                    || applyNotEmpty(field, value, champ, errors)
-                    || applyNotBlank(field, value, champ, errors);
+            boolean failedRequiredCheck = applyNotNull(field, value, champ, errors) ||
+                applyNotEmpty(field, value, champ, errors) ||
+                applyNotBlank(field, value, champ, errors);
 
             if (!failedRequiredCheck) {
                 applyPattern(field, value, champ, errors);
@@ -101,16 +95,14 @@ public class ReflectionValidator {
         }
     }
 
+    // Used for the recursive call (@Valid)
     private static void applyValid(Field field, Object value, Set<ValidationError> errors) {
         if (!field.isAnnotationPresent(Valid.class)) return;
         if (value == null) return;
         collectErrors(value, errors);
     }
 
-    // -------------------------------------------------------------------------
-    // Method-level processing (@AssertTrue)
-    // -------------------------------------------------------------------------
-
+    // Method-level checker (@AssertTrue)
     private static void validateAssertTrueMethods(Object target, Set<ValidationError> errors) {
         for (Method method : target.getClass().getDeclaredMethods()) {
             if (!method.isAnnotationPresent(AssertTrue.class)) continue;
@@ -132,10 +124,7 @@ public class ReflectionValidator {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
+    // Helpers methods
     private static List<Field> getAllFields(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
         Class<?> current = clazz;

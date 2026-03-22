@@ -15,16 +15,12 @@ public class Validator {
               "object")));
     }
 
-    Set<ValidationError> erreursValidation = new HashSet<>();
-
     try {
       ObjectConstraintValidator.validate(testModel);
     } catch (ValidationException ex) {
-      erreursValidation.addAll(ex.getErreurs());
-    }
-
-    if (!erreursValidation.isEmpty()) {
-      throw new ValidationException(DONNEES_INCORRECTES_EXCEPTION, erreursValidation);
+      // if ObjectConstraintValidator.validate returns validation errors they will be in ex.getErreurs()
+      // that we use to overload ValidationException
+      throw new ValidationException(DONNEES_INCORRECTES_EXCEPTION, ex.getErreurs());
     }
   }
 

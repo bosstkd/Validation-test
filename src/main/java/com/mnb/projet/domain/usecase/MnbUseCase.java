@@ -1,8 +1,8 @@
-package com.mnb.projet.application;
+package com.mnb.projet.domain.usecase;
 
 import com.mnb.projet.domain.common.aspect.LogExecutionMarker;
-import com.mnb.projet.domain.common.exceptions.MnbBadRequestException;
-import com.mnb.projet.domain.common.exceptions.MnbNotFoundException;
+import com.mnb.projet.domain.common.exceptions.DomainBadRequestCommandException;
+import com.mnb.projet.domain.common.exceptions.DomainResourceNotFoundException;
 import com.mnb.projet.domain.model.MnbModel;
 import com.mnb.projet.domain.service.MnbService;
 import com.mnb.projet.domain.validation.exception.Validator;
@@ -27,8 +27,8 @@ public class MnbUseCase {
 
     public MnbModel findMnb(String email) {
         if (StringUtils.isBlank(email) || !email.matches(GenericValidatorPatterns.REG_EMAIL)) {
-            throw new MnbBadRequestException("L'adresse mail" + GenericValidatorMessages.ERR_NON_VALIDE);
+            throw new DomainBadRequestCommandException("L'adresse mail" + GenericValidatorMessages.ERR_NON_VALIDE);
         }
-        return service.findByEmail(email).orElseThrow(() -> new MnbNotFoundException("Utilisateur non existant !"));
+        return service.findByEmail(email).orElseThrow(() -> new DomainResourceNotFoundException("Utilisateur non existant !"));
     }
 }

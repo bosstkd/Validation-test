@@ -1,9 +1,10 @@
 package com.mnb.projet;
 
+import com.mnb.projet.infrastructure.spring.ApplicationConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = ApplicationConfiguration.class)
 class ProjetApplicationTests {
 
 	@Test

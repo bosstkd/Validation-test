@@ -202,7 +202,7 @@ class AdresseExampleValidationTest {
         void passes_when_France_and_valid_5_digit_code() {
             AdresseExample adresse = validAdresse();
             adresse.setPays("France");
-            adresse.setCodePostal("69001");
+            adresse.setCodePostal("13001"); // valid 5-digit French code, not 69001 to avoid hasCorrectVille rule
             assertThatNoException().isThrownBy(() -> ReflectionValidator.validate(adresse));
         }
 

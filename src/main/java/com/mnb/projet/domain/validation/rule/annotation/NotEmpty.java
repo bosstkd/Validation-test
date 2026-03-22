@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * The annotated field must not be null and must not be empty.
  * Applies to String, Collection, Map, and array types.
- * Mirrors jakarta.validation.constraints.NotEmpty behavior.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

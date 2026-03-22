@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * The annotated method must return {@code true}.
  * The method must be public, take no parameters, and return boolean or Boolean.
- * Mirrors jakarta.validation.constraints.AssertTrue behavior.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -6,7 +6,7 @@ public class ValidationException extends RuntimeException {
 
     private final Set<ValidationError> erreurs;
 
-    public static final String DONNEES_INCORRECTES_EXCEPTION = "Les données envoyées sont incorrectes";
+    public static final String DONNEES_INCORRECTES_EXCEPTION = "Sent data is incorrect";
 
     public ValidationException(String messageGeneral, Set<ValidationError> erreurs) {
         super(messageGeneral);

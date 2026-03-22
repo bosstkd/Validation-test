@@ -3,7 +3,7 @@ package com.mnb.projet.domain.common.tools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mnb.projet.domain.common.exceptions.MnbServerException;
+import com.mnb.projet.domain.common.exceptions.DomainInternalException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ public class LocalObjectMapper {
             JsonNode jsonObj = mapper.readTree(jsonString);
             return mapper.convertValue(jsonObj, objectClass);
         } catch (JsonProcessingException e) {
-            throw new MnbServerException(MnbServerException.DEFAULT_ERROR);
+            throw new DomainInternalException(DomainInternalException.DEFAULT_ERROR);
         }
     }
 
@@ -26,7 +26,7 @@ public class LocalObjectMapper {
         try {
             return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new MnbServerException(MnbServerException.DEFAULT_ERROR);
+            throw new DomainInternalException(DomainInternalException.DEFAULT_ERROR);
         }
     }
 
