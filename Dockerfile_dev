@@ -1,0 +1,19 @@
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+
+# Metadata labels
+LABEL version="1.0" \
+      description="mnb-api" \
+      maintainer="a-ek@hotmail.fr"
+
+# Set the working directory
+WORKDIR /opt/api
+
+# Copy the JAR file into the container
+COPY ./target/mnb-0.0.1-SNAPSHOT.jar .
+
+# Expose the necessary port
+EXPOSE 8081
+
+# Use ENTRYPOINT to define how the container should start
+ENTRYPOINT ["java", "-jar", "mnb-0.0.1-SNAPSHOT.jar"]

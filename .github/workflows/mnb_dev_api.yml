@@ -1,0 +1,91 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: mnb-api image and sending it to dockerhub
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Setup Maven settings.xml
+        run: |
+          mkdir -p ~/.m2
+          echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 https://maven.apache.org/xsd/settings-1.1.0.xsd">
+            <offline>false</offline>
+            <servers>
+                <server>
+                    <id>mnk-repo</id>
+                    <username>admin</username>
+                    <password>A1b2c3d4e5f6</password>
+                </server>
+            </servers>
+            <mirrors>
+              <mirror>
+                <id>mnk-repo-mirror</id>
+                <mirrorOf>mnk-repo</mirrorOf>
+                <url>http://mnk-erp.org:49156/repository/mnk-tool/</url>
+                <blocked>false</blocked>
+                <layout>default</layout>
+              </mirror>
+            </mirrors>
+            <profiles>
+                <profile>
+                    <id>mnk-repo-profile</id>
+                    <repositories>
+                        <repository>
+                            <id>mnk-repo</id>
+                            <url>http://mnk-erp.org:8014/repository/mnk-tool/</url>
+                        </repository>
+                    </repositories>
+                </profile>
+            </profiles>
+            <activeProfiles>
+                <activeProfile>mnk-repo-profile</activeProfile>
+            </activeProfiles>
+          </settings>' > ~/.m2/settings.xml
+
+      - name: Build with Maven
+        run: mvn package -DskipTests --file pom.xml
+
+      - name: Build Docker image
+        run: docker build -t mnkerp/mnb-api:1.0 -f Dockerfile_dev .
+
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image to Docker Hub
+        run: docker push mnkerp/mnb-api:1.0
+
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      - name: SSH Deployment Script
+        run: |
+          # This script will expect the password prompt and send the password.
+          sshpass -p ${{ secrets.SERVER_PASSWORD }} ssh -p 49154 -o StrictHostKeyChecking=no mnk-e@mnk-erp.org "cd CICD/ecosystem/serve-env/mnb && deploy.sh"

@@ -1,0 +1,11 @@
+{
+  "nom": "Mahmoudi",
+  "prenom": "Amine",
+  "email": "a-ek@hotmail.fr",
+  "adresse": {
+    "voie": "38, avenue des source",
+    "ville": "Ecully",
+    "codePostal": "69130",
+    "pays": "France"
+  }
+}
