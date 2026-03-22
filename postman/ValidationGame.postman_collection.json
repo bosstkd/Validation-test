@@ -1,0 +1,60 @@
+{
+  "info": {
+    "_postman_id": "4ad734d1-b263-417b-8dfd-0e8b496fc47a",
+    "name": "ValidationGame",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29634291"
+  },
+  "item": [
+    {
+      "name": "test-game",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "id-entity",
+            "value": "mon-labo-tes",
+            "type": "default"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg4NDg5MjEyMmUyOTM5ZmQxZjMxMzc1YjJiMzYzZWM4MTU3MjNiYmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3MzgwNjcxMTYzNjgtMm5oNThqc25nbDBhajN2bXMyOWZ0a2R0NTN2aW1oNmYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3MzgwNjcxMTYzNjgtMm5oNThqc25nbDBhajN2bXMyOWZ0a2R0NTN2aW1oNmYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDU3NTQ0OTAyMzc2MDkxMzYzNzQiLCJlbWFpbCI6Im1uay5lcnBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc2MTA4NDA3MiwibmFtZSI6Ik91ckVycCBPdXJFcnAiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSl9GQk0wMzI3aFdaQ1dvdUlTNkM2cUtpS3YyZ3Z6UHo5UHBZaUw1THBYdUtXNHR3PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6Ik91ckVycCIsImZhbWlseV9uYW1lIjoiT3VyRXJwIiwiaWF0IjoxNzYxMDg0MzcyLCJleHAiOjE3NjEwODc5NzIsImp0aSI6IjkzYzNkYTNkNjM3MmIxNGQyYzUxNTEzMDYzMDNlYjliNTUzMWYxMTUifQ.NVgkBQNX1rtxjc9p6DkGjgXvMham7b_A_8HP83-xfd306ITt_lyCu1Hk5HEL-uuCnJx1wnTr0Hg5_-ZwD4Bw4ChW5XBNuVw8kqBUkfLSADQhYyF6ApbTHHKfeRJYmqq0EqVTiw4FO0AI22AI6ceNltThfEcEiIfaB6OZnG2xUpBi_9cacSgPNWAnkoQABpFRHhfxIyZkZifmEKy3CgKQOzKad3uVR7Sh0Es-2m0GgVggidExzLxklOQzmfUyVV9kRZ2yJxVFNEE_fvrcaEtP_RHY7_wS0CtjGKHsMsfnn2-XBiETmqyjTxHtwupup3YP_TlocnVARcCksTTCDfXJfw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nom\": \"Mahmoudi\",\n  \"prenom\": \"Mohammed El Amine\",\n  \"email\": \"a-ek@hotmail.fr\",\n  \"adresse\": {\n    \"voie\": \"38 avenue des sources\",\n    \"codePostal\": \"69001\",\n    \"ville\": \"Lyon\",\n    \"pays\": \"France\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/mnb/create",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "mnb",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
