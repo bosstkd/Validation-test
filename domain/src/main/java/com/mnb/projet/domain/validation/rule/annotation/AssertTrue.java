@@ -6,11 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotated method must return {@code true}.
- * The method must be public, take no parameters, and return boolean or Boolean.
+ * La méthode annotée doit retourner {@code true}.
+ * Elle doit être publique, sans paramètre, et retourner boolean ou Boolean.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AssertTrue {
     String message() default "doit être vrai";
+    Class<?>[] groups() default {};
 }

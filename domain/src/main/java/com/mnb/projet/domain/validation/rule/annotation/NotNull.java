@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotNull {
     String message() default "ne peut pas être null";
+    Class<?>[] groups() default {};
 }

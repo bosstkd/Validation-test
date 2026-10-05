@@ -3,6 +3,7 @@ package com.mnb.projet.domain.validation.rule;
 import com.mnb.projet.domain.validation.exception.ValidationException;
 import com.mnb.projet.domain.validation.exception.ValidationError;
 import com.mnb.projet.domain.validation.rule.annotation.*;
+import com.mnb.projet.domain.validation.rule.group.Default;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -68,6 +69,47 @@ class ReflectionValidatorTest {
 
         @NotEmpty(message = "prenom vide")
         String prenom;
+    }
+
+    interface OnCreate {}
+
+    interface OnUpdate {}
+
+    interface OnCreateStrict extends OnCreate {}
+
+    static class NestedWithGroups {
+        @NotBlank(message = "nested default")
+        String defaut;
+
+        @NotBlank(message = "nested update", groups = OnUpdate.class)
+        String update;
+    }
+
+    static class ModelGroups {
+        @NotNull(message = "sans groupe")
+        String sansGroupe = "ok";
+
+        @NotNull(message = "id obligatoire en update", groups = OnUpdate.class)
+        String id = "ok";
+
+        @NotEmpty(message = "nom obligatoire en create", groups = OnCreate.class)
+        String nom = "ok";
+
+        @NotBlank(message = "code obligatoire en create et update", groups = {OnCreate.class, OnUpdate.class})
+        String code = "ok";
+
+        @Pattern(regexp = "\\d+", message = "ref numérique en create", groups = OnCreate.class)
+        String ref = "1";
+
+        @Valid
+        NestedWithGroups nested;
+
+        boolean coherent = true;
+
+        @AssertTrue(message = "incohérent en update", groups = OnUpdate.class)
+        public boolean isCoherent() {
+            return coherent;
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -330,6 +372,106 @@ class ReflectionValidatorTest {
 
             assertThat(ex.getErreurs()).hasSize(2);
             assertThat(messagesOf(ex)).containsExactlyInAnyOrder("nom vide", "prenom vide");
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Groupes
+    // -------------------------------------------------------------------------
+
+    @Nested
+    class GroupsTests {
+
+        private ModelGroups invalidEverywhere() {
+            ModelGroups model = new ModelGroups();
+            model.sansGroupe = null;
+            model.id = null;
+            model.nom = "";
+            model.code = " ";
+            model.ref = "abc";
+            model.coherent = false;
+            return model;
+        }
+
+        @Test
+        void without_group_only_default_constraints_are_checked() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere()), ValidationException.class);
+
+            assertThat(messagesOf(ex)).containsExactly("sans groupe");
+        }
+
+        @Test
+        void explicit_default_group_behaves_like_no_group() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere(), Default.class), ValidationException.class);
+
+            assertThat(messagesOf(ex)).containsExactly("sans groupe");
+        }
+
+        @Test
+        void only_constraints_of_requested_group_are_checked() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere(), OnCreate.class), ValidationException.class);
+
+            assertThat(messagesOf(ex)).containsExactlyInAnyOrder(
+                    "nom obligatoire en create",
+                    "code obligatoire en create et update",
+                    "ref numérique en create");
+        }
+
+        @Test
+        void assert_true_respects_groups() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere(), OnUpdate.class), ValidationException.class);
+
+            assertThat(messagesOf(ex)).containsExactlyInAnyOrder(
+                    "id obligatoire en update",
+                    "code obligatoire en create et update",
+                    "incohérent en update");
+        }
+
+        @Test
+        void several_groups_can_be_requested_at_once() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere(), Default.class, OnCreate.class, OnUpdate.class),
+                    ValidationException.class);
+
+            assertThat(ex.getErreurs()).hasSize(6);
+        }
+
+        @Test
+        void child_group_also_checks_parent_group_constraints() {
+            ValidationException ex = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(invalidEverywhere(), OnCreateStrict.class), ValidationException.class);
+
+            assertThat(messagesOf(ex)).containsExactlyInAnyOrder(
+                    "nom obligatoire en create",
+                    "code obligatoire en create et update",
+                    "ref numérique en create");
+        }
+
+        @Test
+        void passes_when_violations_belong_to_another_group() {
+            ModelGroups model = new ModelGroups();
+            model.id = null; // vérifié uniquement pour OnUpdate
+
+            assertThatNoException().isThrownBy(() -> ReflectionValidator.validate(model));
+            assertThatNoException().isThrownBy(() -> ReflectionValidator.validate(model, OnCreate.class));
+        }
+
+        @Test
+        void valid_cascades_the_requested_groups() {
+            ModelGroups model = new ModelGroups();
+            model.nested = new NestedWithGroups(); // les deux champs sont null
+
+            ValidationException exDefault = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(model), ValidationException.class);
+            ValidationException exUpdate = catchThrowableOfType(
+                    () -> ReflectionValidator.validate(model, OnUpdate.class), ValidationException.class);
+
+            assertThat(messagesOf(exDefault)).containsExactly("nested default");
+            assertThat(messagesOf(exUpdate)).containsExactly("nested update");
         }
     }
 

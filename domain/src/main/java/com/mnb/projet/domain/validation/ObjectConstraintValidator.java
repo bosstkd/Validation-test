@@ -6,16 +6,12 @@ public class ObjectConstraintValidator {
 
     private ObjectConstraintValidator() {}
 
-    public static <T> void validate(T objectToValidate) {
-        ReflectionValidator.validate(objectToValidate);
-    }
-
     /**
-     * Validates the object using our annotation-based reflection engine.
-     * The {@code group} parameter is kept for API compatibility but is not used —
-     * our validation system does not support jakarta-style validation groups.
+     * Valide l'objet avec notre moteur de réflexion basé sur les annotations.
+     * Seules les contraintes appartenant à l'un des {@code groups} fournis sont vérifiées ;
+     * sans groupe, c'est le groupe {@code Default} qui est validé.
      */
-    public static <T, U> void validate(T objectToValidate, Class<U> group) {
-        ReflectionValidator.validate(objectToValidate);
+    public static <T> void validate(T objectToValidate, Class<?>... groups) {
+        ReflectionValidator.validate(objectToValidate, groups);
     }
 }

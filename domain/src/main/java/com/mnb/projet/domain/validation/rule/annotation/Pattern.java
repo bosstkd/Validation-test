@@ -6,12 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotated CharSequence must match the specified regular expression.
- * Null elements are considered valid (use @NotNull or @NotEmpty to reject nulls).
+ * La CharSequence annotée doit correspondre à l'expression régulière indiquée.
+ * Les valeurs null sont considérées comme valides (utiliser @NotNull ou @NotEmpty pour les rejeter).
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Pattern {
     String regexp();
     String message() default "n'est pas valide";
+    Class<?>[] groups() default {};
 }

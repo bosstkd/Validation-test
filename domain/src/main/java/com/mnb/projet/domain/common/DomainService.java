@@ -7,11 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as a domain service in the DDD sense.
+ * Marque une classe comme service de domaine au sens DDD.
  * <p>
- * Pure Java annotation — no Spring dependency.
- * Spring registers beans annotated with {@code @DomainService} via
- * a {@code @ComponentScan} include filter in {@code ApplicationConfiguration}.
+ * Annotation Java pure — aucune dépendance à Spring.
+ * Spring enregistre les beans annotés avec {@code @DomainService} via
+ * un filtre d'inclusion {@code @ComponentScan} dans {@code ApplicationConfiguration}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

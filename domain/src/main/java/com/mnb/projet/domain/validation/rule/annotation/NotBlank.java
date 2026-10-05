@@ -6,10 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotated field must not be null and must contain at least one non-whitespace character.
+ * Le champ annoté ne doit pas être null et doit contenir au moins un caractère autre qu'un espace.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotBlank {
     String message() default "ne peut pas être vide ou blanc";
+    Class<?>[] groups() default {};
 }

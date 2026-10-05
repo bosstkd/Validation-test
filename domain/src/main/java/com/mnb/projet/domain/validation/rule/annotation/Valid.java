@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a field for cascaded validation: the ReflectionValidator will recursively
- * validate the nested object using its own annotations.
+ * Marque un champ pour une validation en cascade : le ReflectionValidator valide récursivement
+ * l'objet imbriqué à partir de ses propres annotations.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

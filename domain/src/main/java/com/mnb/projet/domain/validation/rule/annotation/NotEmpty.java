@@ -6,11 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotated field must not be null and must not be empty.
- * Applies to String, Collection, Map, and array types.
+ * Le champ annoté ne doit être ni null ni vide.
+ * S'applique aux types String, Collection, Map et tableau.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotEmpty {
     String message() default "ne peut pas être vide";
+    Class<?>[] groups() default {};
 }
