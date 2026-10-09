@@ -1,6 +1,8 @@
 package com.mnb.projet.spring;
 
 import com.mnb.projet.domain.common.DomainService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -14,6 +16,7 @@ import static com.mnb.projet.spring.ApplicationConfiguration.APPLICATION_PACKAGE
 
 @Slf4j
 @Configuration
+@OpenAPIDefinition(info = @Info(title = "Mnb API", version = "0.0.1", description = "Api description"))
 @EnableAutoConfiguration
 @EnableJpaRepositories(PERSISTANCE_PACKAGE)
 @EntityScan(PERSISTANCE_PACKAGE)
